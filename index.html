@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>แบบทดสอบ: วิทยาศาสตร์และจิตวิทยาการศึกษา (Mobile UI)</title>
+    <title>แบบทดสอบ: วิทยาศาสตร์และจิตวิทยาการศึกษา (Auto Grading)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Sarabun', sans-serif; -webkit-tap-highlight-color: transparent; }
         .hidden { display: none !important; }
-        .spinner { border: 4px solid rgba(0,0,0,0.1); border-left-color: #2563eb; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
+        .spinner { border: 4px solid rgba(0,0,0,0.1); border-left-color: #10b981; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         /* สไตล์สำหรับตอนเลือกคำตอบ */
         input[type="radio"]:checked + span { color: #1d4ed8; font-weight: 600; }
@@ -30,7 +30,7 @@
         
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 mb-6 text-center">
             <h1 class="text-xl md:text-2xl font-bold text-blue-700 mb-2">วิทยาศาสตร์และจิตวิทยาการศึกษา</h1>
-            <p class="text-sm text-slate-500">ระบบตรวจข้อเขียนด้วย AI (Mobile Friendly)</p>
+            <p class="text-sm text-slate-500">ระบบประเมินผลอัตโนมัติด้วย Keyword Matching</p>
         </div>
 
         <form id="examForm" class="space-y-6">
@@ -47,17 +47,10 @@
                 <div id="essay-container" class="p-4 sm:p-6 space-y-6"></div>
             </div>
 
-            <!-- กล่องใส่ API Key -->
-            <div class="bg-amber-50 rounded-2xl shadow-sm border border-amber-200 p-5 text-center">
-                <h3 class="font-bold text-amber-800 text-sm sm:text-base mb-1">🔑 การตั้งค่า AI (Gemini API)</h3>
-                <p class="text-xs text-amber-700 mb-3">จำเป็นต้องใส่ API Key เพื่อให้ระบบตรวจข้อเขียน</p>
-                <input type="password" id="apiKeyInput" placeholder="วาง API Key ที่นี่..." class="w-full p-3 border border-amber-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-500 mb-2 text-sm" required>
-            </div>
-
             <!-- ปุ่มส่งข้อสอบ -->
             <div class="pt-4 pb-8">
-                <button type="submit" id="submitBtn" class="w-full bg-blue-600 active:bg-blue-700 text-white font-bold py-4 px-6 rounded-2xl shadow-lg transition duration-200 text-lg">
-                    ส่งข้อสอบให้ AI ตรวจ
+                <button type="submit" id="submitBtn" class="w-full bg-emerald-600 active:bg-emerald-700 text-white font-bold py-4 px-6 rounded-2xl shadow-lg transition duration-200 text-lg">
+                    ส่งข้อสอบและดูผลคะแนน
                 </button>
             </div>
         </form>
@@ -65,8 +58,8 @@
         <!-- โหลดดิงสกรีน -->
         <div id="loadingSection" class="hidden text-center py-24 px-4 bg-white rounded-2xl shadow-sm border border-slate-200 mt-6">
             <div class="spinner mb-6"></div>
-            <h2 class="text-xl font-bold text-blue-600 mb-2">AI กำลังวิเคราะห์คำตอบ...</h2>
-            <p class="text-sm text-slate-500">อาจใช้เวลาประมาณ 10-20 วินาที<br>โปรดอย่าปิดหน้าจอ</p>
+            <h2 class="text-xl font-bold text-emerald-600 mb-2">กำลังประมวลผลคำตอบ...</h2>
+            <p class="text-sm text-slate-500">ระบบกำลังวิเคราะห์ความถูกต้อง</p>
         </div>
 
         <!-- ผลลัพธ์ -->
@@ -87,7 +80,7 @@
     </div>
 
     <script>
-        // ข้อมูลข้อสอบปรนัย
+        // ข้อมูลข้อสอบปรนัย (เนื้อหาเดิม)
         const mcQuestions = [
             { q: "คำว่า Science ในภาษาอังกฤษ หรือ Scientia ในภาษาลาติน มีความหมายตรงกับข้อใดมากที่สุด?", choices: ["ปรากฏการณ์ธรรมชาติ", "ความรู้", "การทดลอง", "ความอยากรู้อยากเห็น"], ans: 1, rationale: "รากศัพท์ดั้งเดิมแปลว่า ความรู้ (Knowledge)" },
             { q: "ทักษะกระบวนการทางวิทยาศาสตร์ (SAPA) ขั้นพื้นฐาน มีจำนวนกี่ทักษะ และเหมาะสมกับผู้เรียนในวัยใด?", choices: ["5 ทักษะ เหมาะสำหรับปฐมวัย", "5 ทักษะ เหมาะสำหรับมัธยมวัย", "8 ทักษะ เหมาะสำหรับปฐมวัย", "8 ทักษะ เหมาะสำหรับมัธยมวัย"], ans: 2, rationale: "ทักษะพื้นฐานมีทั้งหมด 8 ทักษะ ออกแบบมาให้เหมาะกับเด็กปฐมวัย" },
@@ -101,21 +94,61 @@
             { q: "จุดโฟกัสสำคัญของการทำ IOC 'แบบทดสอบ' ที่ต่างจากใบความรู้ คือข้อใด?", choices: ["ความถูกต้องของเนื้อหา", "ระดับพฤติกรรมที่ต้องการวัด", "ความยากง่ายของภาษา", "ความสวยงามของการออกแบบ"], ans: 1, rationale: "แบบทดสอบต้องดูว่าวัด 'ระดับพฤติกรรม' ได้ตรงตามที่ออกแบบไว้หรือไม่" }
         ];
 
-        // ข้อมูลข้อสอบอัตนัย (สำหรับส่งให้ AI เทียบ)
+        // ข้อมูลข้อสอบอัตนัย พร้อมระบบ Keywords
         const essayQuestions = [
-            { q: "จงอธิบายความแตกต่างระหว่าง Formative Assessment และ Summative Assessment", model: "Formative ประเมินระหว่างทาง เพื่อพัฒนาผู้เรียน. Summative ประเมินปลายทาง เพื่อตัดสินผลสัมฤทธิ์." },
-            { q: "ตัวแปรต้น (Independent) และ ตัวแปรควบคุม (Controlled) มีหน้าที่ต่างกันอย่างไร?", model: "ตัวแปรต้นคือสาเหตุที่เราต้องการศึกษา ตัวแปรควบคุมคือปัจจัยที่ต้องควบคุมให้เหมือนกันเพื่อไม่ให้ผลคลาดเคลื่อน." },
-            { q: "ทักษะกระบวนการทางวิทยาศาสตร์ขั้นพื้นฐาน และขั้นสูง มีจำนวนต่างกันอย่างไร และเหมาะกับวัยใด?", model: "ขั้นพื้นฐานมี 8 ทักษะ เหมาะกับปฐมวัย ขั้นสูงมี 5 ทักษะ เหมาะกับมัธยมวัย." },
-            { q: "จากกระบวนการเกิดการเรียนรู้ 'การรับรู้ (Perception)' และ 'ความคิดรวบยอด (Conception)' สัมพันธ์กันอย่างไร?", model: "เมื่อเกิดการรับรู้โดยส่งกระแสประสาทไปสมอง สมองจะทำการแปลผล จนเกิดเป็นความเข้าใจหรือความคิดรวบยอด." },
-            { q: "จากการคำนวณ IOC หากผู้เชี่ยวชาญ 5 ท่าน ให้คะแนน: +1, 0, +1, -1, +1 ข้อสอบข้อนี้ผ่านเกณฑ์หรือไม่? เพราะเหตุใด?", model: "ไม่ผ่าน เพราะผลรวมคือ 2 หารจำนวนคน 5 = 0.4 ซึ่งน้อยกว่าเกณฑ์ที่กำหนดคือ 0.5" },
-            { q: "หากต้องการจัดกิจกรรมให้เด็กที่มีพหุปัญญา 'ด้านร่างกาย' และ 'ด้านธรรมชาติ' โดดเด่น ควรจัดลักษณะใด?", model: "ควรจัดกิจกรรมให้ออกไปสำรวจธรรมชาตินอกห้องเรียน และให้มีการลงมือปฏิบัติ เคลื่อนไหวร่างกาย." },
-            { q: "ผู้เรียนที่มีรูปแบบการเรียนรู้แบบ Auditory (การฟัง) ควรใช้สื่อหรือกิจกรรมประเภทใด?", model: "ใช้สื่อประเภทเสียง หรือกิจกรรมที่เน้นการฟังบรรยาย การพูดคุย อภิปรายแลกเปลี่ยน." },
-            { q: "การหาค่า IOC ของ 'ใบความรู้' และ 'แบบทดสอบ' จุดโฟกัสของผู้เชี่ยวชาญต่างกันอย่างไร?", model: "ใบความรู้เน้นความถูกต้องครอบคลุม แบบทดสอบเน้นการวัดระดับพฤติกรรมที่ออกแบบไว้." },
-            { q: "ตามโครงสร้างหลักสูตร ป.4-ป.6 เนื้อหา 'การเปลี่ยนแปลงของสาร' และ 'เสียง' อยู่ชั้นใด?", model: "อยู่ในระดับชั้น ป.5 (หมวดพลวัต/Dynamics)" },
-            { q: "ตามจิตวิทยาการศึกษา 'การเรียนรู้' หมายถึงอะไร? และสิ่งใดที่ไม่นับว่าเป็นการเรียนรู้?", model: "การเปลี่ยนแปลงพฤติกรรมค่อนข้างถาวรจากประสบการณ์ สิ่งที่ไม่นับคือ อาการชั่วคราว ความเจ็บป่วย หรือสัญชาตญาณ." }
+            { 
+                q: "จงอธิบายความแตกต่างระหว่าง Formative Assessment และ Summative Assessment", 
+                keywords: ["ระหว่าง", "ระหว่างทาง", "พัฒนา", "ไม่เป็นทางการ", "ปลายทาง", "ตัดสิน", "เป็นทางการ", "ผลสัมฤทธิ์", "เกรด"],
+                model: "Formative ประเมินระหว่างทาง แบบไม่เป็นทางการ เพื่อพัฒนาผู้เรียน ส่วน Summative ประเมินปลายทาง แบบเป็นทางการ เพื่อตัดสินผลสัมฤทธิ์" 
+            },
+            { 
+                q: "ตัวแปรต้น (Independent) และ ตัวแปรควบคุม (Controlled) มีหน้าที่ต่างกันอย่างไร?", 
+                keywords: ["ต้น", "สาเหตุ", "ต้องการ", "ควบคุม", "เหมือนกัน", "คงที่", "แวดล้อม", "ปัจจัย", "คลาดเคลื่อน"],
+                model: "ตัวแปรต้นคือสิ่งที่เป็นสาเหตุที่เราต้องการศึกษา ส่วนตัวแปรควบคุมคือปัจจัยอื่นๆ ที่ต้องควบคุมให้เหมือนกันเพื่อไม่ให้ผลคลาดเคลื่อน" 
+            },
+            { 
+                q: "ทักษะกระบวนการทางวิทยาศาสตร์ขั้นพื้นฐาน และขั้นสูง มีจำนวนต่างกันอย่างไร และเหมาะกับวัยใด?", 
+                keywords: ["พื้นฐาน", "8", "ปฐมวัย", "สูง", "บูรณาการ", "5", "มัธยมวัย", "มัธยม"],
+                model: "ทักษะขั้นพื้นฐานมี 8 ทักษะ เหมาะกับเด็กปฐมวัย ส่วนทักษะขั้นสูง (บูรณาการ) มี 5 ทักษะ เหมาะกับเด็กมัธยมวัย" 
+            },
+            { 
+                q: "จากกระบวนการเกิดการเรียนรู้ 'การรับรู้ (Perception)' และ 'ความคิดรวบยอด (Conception)' สัมพันธ์กันอย่างไร?", 
+                keywords: ["รับรู้", "กระแสประสาท", "สมอง", "แปลผล", "ความหมาย", "เข้าใจ", "รวบยอด"],
+                model: "เมื่อรับสัมผัสและส่งกระแสประสาทไปสมอง จะเกิดการรับรู้ จากนั้นสมองจะทำการแปลผลสิ่งนั้นจนเกิดเป็นความเข้าใจหรือความคิดรวบยอด" 
+            },
+            { 
+                q: "จากการคำนวณ IOC หากผู้เชี่ยวชาญ 5 ท่าน ให้คะแนน: +1, 0, +1, -1, +1 ข้อสอบข้อนี้ผ่านเกณฑ์หรือไม่? เพราะเหตุใด?", 
+                keywords: ["ไม่ผ่าน", "รวม", "2", "หาร", "5", "0.4", "น้อยกว่า", "0.5"],
+                model: "ไม่ผ่านเกณฑ์ เพราะผลรวมคะแนนคือ 2 นำไปหารจำนวนผู้เชี่ยวชาญ 5 ท่าน จะได้ 0.4 ซึ่งน้อยกว่าเกณฑ์ที่กำหนดคือ 0.5" 
+            },
+            { 
+                q: "หากต้องการจัดกิจกรรมให้เด็กที่มีพหุปัญญา 'ด้านร่างกาย' และ 'ด้านธรรมชาติ' โดดเด่น ควรจัดลักษณะใด?", 
+                keywords: ["สำรวจ", "นอกห้องเรียน", "สิ่งแวดล้อม", "ธรรมชาติ", "ปฏิบัติ", "เคลื่อนไหว", "ร่างกาย", "หยิบจับ", "กิจกรรม"],
+                model: "ควรจัดกิจกรรมที่ให้ผู้เรียนได้ออกไปสำรวจธรรมชาตินอกห้องเรียน และได้ลงมือปฏิบัติ เคลื่อนไหวร่างกาย หรือหยิบจับสิ่งต่างๆ" 
+            },
+            { 
+                q: "ผู้เรียนที่มีรูปแบบการเรียนรู้แบบ Auditory (การฟัง) ควรใช้สื่อหรือกิจกรรมประเภทใด?", 
+                keywords: ["ฟัง", "เสียง", "พูดคุย", "สนทนา", "บรรยาย", "อภิปราย", "เทป", "พอดแคสต์"],
+                model: "ควรใช้สื่อประเภทเสียง เทปบันทึกเสียง หรือกิจกรรมที่เน้นการฟังบรรยาย การพูดคุย และอภิปรายแลกเปลี่ยนความคิดเห็น" 
+            },
+            { 
+                q: "การหาค่า IOC ของ 'ใบความรู้' และ 'แบบทดสอบ' จุดโฟกัสของผู้เชี่ยวชาญต่างกันอย่างไร?", 
+                keywords: ["ความรู้", "เนื้อหา", "ถูกต้อง", "ครอบคลุม", "ทดสอบ", "พฤติกรรม", "ระดับ", "วัด"],
+                model: "ใบความรู้โฟกัสที่ความถูกต้องและครอบคลุมของเนื้อหา ส่วนแบบทดสอบต้องโฟกัสว่าสามารถวัดระดับพฤติกรรมได้ตรงตามที่ออกแบบไว้หรือไม่" 
+            },
+            { 
+                q: "ตามโครงสร้างหลักสูตร ป.4-ป.6 เนื้อหา 'การเปลี่ยนแปลงของสาร' และ 'เสียง' อยู่ชั้นใด?", 
+                keywords: ["ป.5", "ประถมศึกษาปีที่ 5", "พลวัต", "dynamics"],
+                model: "อยู่ในระดับชั้น ป.5 (หมวดพลวัต หรือ Dynamics)" 
+            },
+            { 
+                q: "ตามจิตวิทยาการศึกษา 'การเรียนรู้' หมายถึงอะไร? และสิ่งใดที่ไม่นับว่าเป็นการเรียนรู้?", 
+                keywords: ["เปลี่ยนแปลง", "พฤติกรรม", "ถาวร", "ประสบการณ์", "ชั่วคราว", "เจ็บป่วย", "สัญชาตญาณ"],
+                model: "การเรียนรู้คือการเปลี่ยนแปลงพฤติกรรมอย่างค่อนข้างถาวรจากประสบการณ์ สิ่งที่ไม่นับว่าเป็นการเรียนรู้คือพฤติกรรมชั่วคราว อาการเจ็บป่วย หรือสัญชาตญาณ" 
+            }
         ];
 
-        // เรนเดอร์ UI คำถาม
+        // เรนเดอร์ UI
         const mcContainer = document.getElementById('mc-container');
         const essayContainer = document.getElementById('essay-container');
 
@@ -156,108 +189,90 @@
         }, 1000);
 
         // จัดการเหตุการณ์ Submit
-        document.getElementById('examForm').addEventListener('submit', async function(e) {
+        document.getElementById('examForm').addEventListener('submit', function(e) {
             e.preventDefault();
             clearInterval(timerInterval);
-            document.getElementById('timerWrapper').classList.add('hidden'); // ซ่อนเวลา
-
-            const apiKey = document.getElementById('apiKeyInput').value.trim();
+            document.getElementById('timerWrapper').classList.add('hidden'); 
+            
             const formData = new FormData(this);
-
             this.classList.add('hidden');
             document.getElementById('loadingSection').classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
-            // ตรวจปรนัย
-            let mcScore = 0;
-            const mcReview = document.getElementById('mc-review-container');
-            mcReview.innerHTML = '<h3 class="text-lg font-bold border-b pb-2 mb-3 mt-2 text-blue-800">📌 เฉลยตอนที่ 1 (ปรนัย)</h3>';
-            
-            mcQuestions.forEach((q, index) => {
-                const userAnswer = parseInt(formData.get(`mcq-${index}`));
-                const isCorrect = userAnswer === q.ans;
-                if(isCorrect) mcScore++;
+            // ใช้ setTimeout จำลองการโหลดประมวลผลให้ดูสมจริง
+            setTimeout(() => {
+                // ตรวจปรนัย
+                let mcScore = 0;
+                const mcReview = document.getElementById('mc-review-container');
+                mcReview.innerHTML = '<h3 class="text-lg font-bold border-b pb-2 mb-3 mt-2 text-blue-800">📌 เฉลยตอนที่ 1 (ปรนัย)</h3>';
                 
-                mcReview.innerHTML += `
-                    <div class="p-3 sm:p-4 rounded-xl border ${isCorrect ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}">
-                        <p class="font-medium text-sm sm:text-base mb-2"><span class="mr-1">${index + 1}.</span>${q.q}</p>
-                        <p class="text-sm ${isCorrect ? 'text-green-700' : 'text-red-600'}">${isCorrect ? '✅' : '❌'} ตอบ: ${q.choices[userAnswer]}</p>
-                        ${!isCorrect ? `<p class="text-sm text-green-700 mt-1">✓ เฉลย: ${q.choices[q.ans]}</p>` : ''}
-                        <p class="text-slate-500 mt-2 text-xs bg-white/60 p-2 rounded leading-relaxed">💡 ${q.rationale}</p>
-                    </div>
-                `;
-            });
-            document.getElementById('mc-score').textContent = `${mcScore} / 10`;
-
-            // ตรวจอัตนัยด้วย API
-            const aiPayloadArray = essayQuestions.map((q, index) => ({
-                id: index,
-                question: q.q,
-                model_answer: q.model,
-                student_answer: formData.get(`essay-${index}`).trim()
-            }));
-
-            const prompt = `
-            คุณคือผู้ตรวจข้อสอบ (Exam Evaluator)
-            วิเคราะห์คำตอบนักเรียนทั้ง 10 ข้อเทียบกับ 'แนวคำตอบ' 
-            ให้คะแนน (0-100) และเขียน feedback สั้นๆ กระชับ เป็นภาษาไทย
-            
-            ข้อมูลคำตอบ:
-            ${JSON.stringify(aiPayloadArray, null, 2)}
-            
-            คืนค่าผลลัพธ์เป็น JSON Array เท่านั้น ห้ามมี Markdown หรือข้อความอื่น:
-            [{"id":0,"score":80,"feedback":"ดีมาก แต่อธิบายส่วน X น้อยไป"}, ...]
-            `;
-
-            try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }]
-                    })
+                mcQuestions.forEach((q, index) => {
+                    const userAnswer = parseInt(formData.get(`mcq-${index}`));
+                    const isCorrect = userAnswer === q.ans;
+                    if(isCorrect) mcScore++;
+                    
+                    mcReview.innerHTML += `
+                        <div class="p-3 sm:p-4 rounded-xl border ${isCorrect ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}">
+                            <p class="font-medium text-sm sm:text-base mb-2"><span class="mr-1">${index + 1}.</span>${q.q}</p>
+                            <p class="text-sm ${isCorrect ? 'text-green-700' : 'text-red-600'}">${isCorrect ? '✅' : '❌'} ตอบ: ${q.choices[userAnswer]}</p>
+                            ${!isCorrect ? `<p class="text-sm text-green-700 mt-1">✓ เฉลย: ${q.choices[q.ans]}</p>` : ''}
+                            <p class="text-slate-500 mt-2 text-xs bg-white/60 p-2 rounded leading-relaxed">💡 ${q.rationale}</p>
+                        </div>
+                    `;
                 });
+                document.getElementById('mc-score').textContent = `${mcScore} / 10`;
 
-                if (!response.ok) throw new Error("API Key ผิดพลาด หรือมีปัญหาการเชื่อมต่อ");
-                
-                const data = await response.json();
-                let aiResponseText = data.candidates[0].content.parts[0].text;
-                aiResponseText = aiResponseText.replace(/```json/g, '').replace(/```/g, '').trim();
-                const aiResults = JSON.parse(aiResponseText);
-
+                // ตรวจอัตนัยด้วย Keyword Matching Algorithm
                 const essayReview = document.getElementById('essay-review-container');
-                essayReview.innerHTML = '<h3 class="text-lg font-bold border-b pb-2 mb-3 mt-6 text-emerald-800">📌 เฉลยตอนที่ 2 (AI ตรวจ)</h3>';
+                essayReview.innerHTML = '<h3 class="text-lg font-bold border-b pb-2 mb-3 mt-6 text-emerald-800">📌 เฉลยตอนที่ 2 (อัตนัย - อ้างอิงคำสำคัญ)</h3>';
 
-                aiResults.forEach(res => {
-                    const qData = aiPayloadArray[res.id];
-                    let badgeColor = res.score >= 80 ? 'bg-green-100 text-green-800' : (res.score >= 50 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800');
+                essayQuestions.forEach((q, index) => {
+                    const studentAns = formData.get(`essay-${index}`).trim().toLowerCase();
+                    let matchCount = 0;
+                    let matchedWords = [];
+                    
+                    // นับจำนวนคำสำคัญที่เจอในคำตอบ
+                    q.keywords.forEach(kw => {
+                        if(studentAns.includes(kw.toLowerCase())) {
+                            matchCount++;
+                            matchedWords.push(kw);
+                        }
+                    });
+
+                    // คำนวณเปอร์เซ็นต์ (ถ้าเจอคำสำคัญเกิน 50% ของทั้งหมดถือว่าได้เต็ม 100% เพื่อความแฟร์)
+                    let targetCount = Math.ceil(q.keywords.length * 0.5); 
+                    let scorePercent = Math.min(Math.round((matchCount / targetCount) * 100), 100);
+                    
+                    let badgeColor = scorePercent >= 80 ? 'bg-green-100 text-green-800' : (scorePercent >= 50 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800');
+                    
+                    // คอมเมนต์ออโต้
+                    let feedbackTxt = scorePercent >= 80 ? "เยี่ยมมาก! ครอบคลุมประเด็นสำคัญ" : (scorePercent >= 50 ? "พอใช้ได้ แต่ยังขาดรายละเอียดบางส่วน" : "ต้องปรับปรุง เนื้อหายังไม่ค่อยตรงกับประเด็น");
 
                     essayReview.innerHTML += `
                         <div class="p-3 sm:p-4 rounded-xl border border-slate-200 bg-white">
-                            <p class="font-medium text-sm sm:text-base mb-2"><span class="mr-1 text-emerald-600">${res.id + 11}.</span>${qData.question}</p>
+                            <p class="font-medium text-sm sm:text-base mb-2"><span class="mr-1 text-emerald-600">${index + 11}.</span>${q.q}</p>
                             <div class="bg-slate-50 p-2 sm:p-3 rounded-lg mb-2 border border-slate-100">
                                 <p class="text-xs text-slate-500 mb-1">📝 คำตอบของคุณ:</p>
-                                <p class="text-sm text-slate-800 leading-relaxed">${qData.student_answer}</p>
+                                <p class="text-sm text-slate-800 leading-relaxed">${formData.get(`essay-${index}`).trim()}</p>
                             </div>
-                            <div class="flex items-center space-x-2 mb-2">
-                                <span class="px-2 py-0.5 rounded text-xs font-bold ${badgeColor}">คะแนน: ${res.score}%</span>
+                            
+                            <div class="flex flex-wrap items-center gap-2 mb-2">
+                                <span class="px-2 py-0.5 rounded text-xs font-bold ${badgeColor}">ความสมบูรณ์: ${scorePercent}%</span>
+                                <span class="text-xs text-slate-500">(${feedbackTxt})</span>
                             </div>
-                            <p class="text-sm text-blue-700 bg-blue-50 p-2 sm:p-3 rounded-lg border border-blue-100 leading-relaxed">🤖 <b>AI:</b> ${res.feedback}</p>
+                            
+                            ${matchedWords.length > 0 ? `<p class="text-xs text-emerald-600 mb-2"><b>คำสำคัญที่พบ:</b> ${matchedWords.join(', ')}</p>` : `<p class="text-xs text-red-500 mb-2">ไม่พบคำสำคัญที่ตรงกับแนวคำตอบ</p>`}
+                            
+                            <p class="text-sm text-emerald-800 bg-emerald-50 p-2 sm:p-3 rounded-lg border border-emerald-100 leading-relaxed">✅ <b>แนวคำตอบ:</b> ${q.model}</p>
                         </div>
                     `;
                 });
 
-            } catch (error) {
-                alert("เกิดข้อผิดพลาดในการรัน AI: " + error.message);
                 document.getElementById('loadingSection').classList.add('hidden');
-                document.getElementById('timerWrapper').classList.remove('hidden');
-                document.getElementById('examForm').classList.remove('hidden');
-                return;
-            }
+                document.getElementById('resultsSection').classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
 
-            document.getElementById('loadingSection').classList.add('hidden');
-            document.getElementById('resultsSection').classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 1000); // ดีเลย์ 1 วินาที ให้ดูเหมือนระบบกำลังคิด
         });
     </script>
 </body>
